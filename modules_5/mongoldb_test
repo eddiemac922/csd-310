@@ -1,11 +1,10 @@
-
 ### IMPORTS
-import pymongo
 from pymongo import MongoClient
+import certifi
 ### DEFINING VARIABLES
+url = "mongodb+srv://admin:admin@cluster0.ifui1.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 client = MongoClient()
-url = "mongodb+srv://admin:admin@cluster0.ifui1.mongodb.net/cybr?retryWrites=true&w=majority"
-client = MongoClient(url)
+client = MongoClient(url,tlsCAFile=certifi.where())
 db = client.pytech
 ### ACTION STATEMENT
-print(db.list_collection_names)
+print(db.list_collection_names())
