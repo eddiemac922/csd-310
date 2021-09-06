@@ -1,1 +1,56 @@
+###IMPORTRS
+from pymongo import MongoClient
+import certifi
 
+###MAIN
+class DB:
+    url = "mongodb+srv://admin:admin@cluster0.ztq1n.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+
+    def __init__(self, url=url):
+        self.url = url
+        self.client = MongoClient(url)
+        self.cdb = self.client.pytech
+
+    def insert(self, names=[]):
+        statements = []
+        for name in names:
+            doc_id = self.cdb.students.insert_one(name).inserted_id
+            statements.append(
+                f"Inserted student record {name['first_name']} {name['last_name']} into the students collection with document_id {doc_id}."
+            )
+        print("-- INSERT STATEMENTS --")
+        for statement in statements:
+            print(statement)
+
+    def update(self, student=None, student_id=None, value=None, update=None):
+        
+        self.dump_db()
+        if not student and not value and not update:
+            return
+        elif student and value and update:
+            self.cdb.students.update_one({student: studnet_id}, {"$set": {value: update}})
+            self.dump_db(student, student_id)
+        pass
+
+    def display(self, record):
+        print(
+            f"Student ID: {record['student_id']}\nFirst Name: {record['first_name']}\nLast Name: {record['last_name']}\n"
+        )
+
+    def dump_db(self, student=None, value=None):
+        if not student and not value:
+            print("-- DISPLAYING STUDENTS DOCUMENTS FROM find() QUERY --")
+            recs = self.cdb.students.find({})
+            for rec in recs:
+                self.display(rec)
+        elif student and value:
+            print("-- DISPLAYING STUDENT DOCUMENT FROM find_one() QUERY --")
+            rec = self.cdb.students.find_one({student: value})
+            self.display(rec)
+        else:
+            return
+
+
+db = DB()
+
+db.update(tgt="student_id", student_id=1007, value="last_name", update="Williams")
